@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 var sun
 var mercery
@@ -54,6 +55,10 @@ const loader = new GLTFLoader();
 const light = new THREE.AmbientLight( 0xffffff );
 scene.add( light );
 
+// Try adding a point light centered in the sun later
+// const pointLight = new THREE.PointLight(0xffffff , 2, 30000);
+// scene.add( pointLight );
+
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -65,6 +70,8 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
+
+var controls = new OrbitControls( camera, renderer.domElement );
 
 loader.load(
     solarSystem[0][1],
@@ -112,6 +119,7 @@ for (let i = 1; i < solarSystem.length; i++) {
   }
 
 camera.position.z = 50;
+controls.update();
 
 function animate() {
     if (solarSystem[0][0]) solarSystem[0][0].rotation.y += solarSystem[0][6];
@@ -122,3 +130,9 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
+window.addEventListener('resize', function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight)
+})
