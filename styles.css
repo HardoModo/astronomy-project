@@ -12,12 +12,12 @@ body {
 }
   
 header {
-    /* min-height: 50px; */
+    min-height: 50px;
     background: var(--redorange);
 }
   
 footer {
-    /* min-height: 50px; */
+    min-height: 50px;
     background: var(--yellow);
 }
   
@@ -28,5 +28,5 @@ body {
   
 main {
     flex: 1;
-    background: var(--orange);
+    height: 80%;
 }
