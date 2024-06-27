@@ -21,13 +21,13 @@ var uranusObj
 var neptuneObj
 
 // AU = Distance from Sun in astronomical units
-const au = 1
+const au = 50
 
 // Scale of planets compared to the sun
 const sunScale = 0.005
-const largeScale = sunScale * .1
-const mediumScale = sunScale * .01
-const smallScale = sunScale * .001
+const largeScale = sunScale * .7
+const mediumScale = sunScale * .5
+const smallScale = sunScale * .3
 
 // Orbit Speed in Earth days
 const orbitSpeedScale = 1
@@ -78,7 +78,7 @@ loader.load(
 function addPlanets(arrayKey) {
 loader.load(
     solarSystem[0][1],
-    // solarSystem[arrayKey][1],
+    // solarSystem[arrayKey][1], Use this after fix models
     function (gltf) {
         gltf.scene.scale.set(solarSystem[arrayKey][4], solarSystem[arrayKey][4], solarSystem[arrayKey][4]);
         solarSystem[arrayKey][0] = gltf.scene
@@ -96,16 +96,26 @@ loader.load(
 );
 }
 
+function setOrbit(arrayKey) {
+    if (solarSystem[arrayKey][0]) solarSystem[arrayKey][0].rotation.y += solarSystem[arrayKey][5];
+}
+
+function setRotation(arrayKey) {
+    if (solarSystem[arrayKey][0]) solarSystem[arrayKey][0].rotation.y += solarSystem[arrayKey][6];
+}
+
 for (let i = 1; i < solarSystem.length; i++) {
     addPlanets(i);
   }
 
-camera.position.z = 20;
+camera.position.z = 50;
 
 function animate() {
-    // if (sun) sun.rotation.x += 0.01;
     if (solarSystem[0][0]) solarSystem[0][0].rotation.y += 0.01;
-    if (solarSystem[5][0]) solarSystem[5][0].rotation.y += 0.02;
+    for (let i = 1; i < solarSystem.length; i++) {
+        setOrbit(i);
+        setRotation(i);
+      }
 
     renderer.render(scene, camera);
 }
