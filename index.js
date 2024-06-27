@@ -62,14 +62,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
 
-function createPlanetObj(planetObj, planet, distanceFromPrimary) {
-    // Creates a point for planets to rotate around in the scene
-    planetObj = new THREE.Object3D();
-    planetObj.add(planet);
-    scene.add(planetObj);
-    planet.position.x = distanceFromPrimary
-}
-
 loader.load(
     solarSystem[0][1],
     function (gltf) {
@@ -83,13 +75,37 @@ loader.load(
     }
 );
 
-// createPlanetObj(solarSystem[1][2], solarSystem[1][0], 5)
+function addPlanets(arrayKey) {
+loader.load(
+    solarSystem[0][1],
+    // solarSystem[arrayKey][1],
+    function (gltf) {
+        gltf.scene.scale.set(solarSystem[arrayKey][4], solarSystem[arrayKey][4], solarSystem[arrayKey][4]);
+        solarSystem[arrayKey][0] = gltf.scene
 
-camera.position.z = 5;
+        solarSystem[arrayKey][2] = new THREE.Object3D();
+        solarSystem[arrayKey][2].add(solarSystem[arrayKey][0]);
+
+        scene.add(solarSystem[arrayKey][2]);
+        solarSystem[arrayKey][0].position.x = solarSystem[arrayKey][3]
+    },
+    undefined,
+    function (error) {
+        console.error(error);
+    }
+);
+}
+
+for (let i = 1; i < solarSystem.length; i++) {
+    addPlanets(i);
+  }
+
+camera.position.z = 20;
 
 function animate() {
     // if (sun) sun.rotation.x += 0.01;
     if (solarSystem[0][0]) solarSystem[0][0].rotation.y += 0.01;
+    if (solarSystem[5][0]) solarSystem[5][0].rotation.y += 0.02;
 
     renderer.render(scene, camera);
 }
