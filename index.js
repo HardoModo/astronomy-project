@@ -9,8 +9,8 @@ renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
 
 const radius = 3;
-const widthSegments = 15;
-const heightSegments = 15;
+const widthSegments = 30;
+const heightSegments = 30;
 
 const geometry = new THREE.SphereGeometry( radius, widthSegments, heightSegments ); 
 const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } ); 
@@ -21,7 +21,7 @@ camera.position.z = 5;
 
 function animate() {
 
-	sphere.rotation.x += 0.01;
+	// sphere.rotation.x += 0.01;
 	sphere.rotation.y += 0.01;
 
 	renderer.render( scene, camera );
