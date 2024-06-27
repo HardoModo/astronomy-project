@@ -33,7 +33,7 @@ const smallScale = sunScale * .3
 const orbitSpeedScale = 1
 
 // Rotation Speed in Earth hours
-const rotationSpeedScale = 1
+const rotationSpeedScale = .00001
 
 // Parameters [3dModel, Model Path, Rotation Point (Primary), Distance from Sun (AU), planet size, orbit speed, rotation speed]
 let solarSystem = [
@@ -50,6 +50,10 @@ let solarSystem = [
 
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
+
+const light = new THREE.AmbientLight( 0xffffff );
+scene.add( light );
+
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -76,24 +80,23 @@ loader.load(
 );
 
 function addPlanets(arrayKey) {
-loader.load(
-    solarSystem[0][1],
-    // solarSystem[arrayKey][1], Use this after fix models
-    function (gltf) {
-        gltf.scene.scale.set(solarSystem[arrayKey][4], solarSystem[arrayKey][4], solarSystem[arrayKey][4]);
-        solarSystem[arrayKey][0] = gltf.scene
+    loader.load(
+        solarSystem[arrayKey][1], 
+        function (gltf) {
+            gltf.scene.scale.set(solarSystem[arrayKey][4], solarSystem[arrayKey][4], solarSystem[arrayKey][4]);
+            solarSystem[arrayKey][0] = gltf.scene
 
-        solarSystem[arrayKey][2] = new THREE.Object3D();
-        solarSystem[arrayKey][2].add(solarSystem[arrayKey][0]);
+            solarSystem[arrayKey][2] = new THREE.Object3D();
+            solarSystem[arrayKey][2].add(solarSystem[arrayKey][0]);
 
-        scene.add(solarSystem[arrayKey][2]);
-        solarSystem[arrayKey][0].position.x = solarSystem[arrayKey][3]
-    },
-    undefined,
-    function (error) {
-        console.error(error);
-    }
-);
+            scene.add(solarSystem[arrayKey][2]);
+            solarSystem[arrayKey][0].position.x = solarSystem[arrayKey][3]
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
 }
 
 function setOrbit(arrayKey) {
@@ -101,7 +104,7 @@ function setOrbit(arrayKey) {
 }
 
 function setRotation(arrayKey) {
-    if (solarSystem[arrayKey][0]) solarSystem[arrayKey][0].rotation.y += solarSystem[arrayKey][6];
+    if (solarSystem[arrayKey][2]) solarSystem[arrayKey][2].rotation.y += solarSystem[arrayKey][6];
 }
 
 for (let i = 1; i < solarSystem.length; i++) {
@@ -111,7 +114,7 @@ for (let i = 1; i < solarSystem.length; i++) {
 camera.position.z = 50;
 
 function animate() {
-    if (solarSystem[0][0]) solarSystem[0][0].rotation.y += 0.01;
+    if (solarSystem[0][0]) solarSystem[0][0].rotation.y += solarSystem[0][6];
     for (let i = 1; i < solarSystem.length; i++) {
         setOrbit(i);
         setRotation(i);
