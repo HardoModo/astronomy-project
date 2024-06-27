@@ -23,17 +23,29 @@ var neptuneObj
 // AU = Distance from Sun in astronomical units
 const au = 1
 
-// Parameters [3dModel, Model Path, Rotation Point (Primary), Distance from Sun (AU)]
+// Scale of planets compared to the sun
+const sunScale = 0.005
+const largeScale = sunScale * .1
+const mediumScale = sunScale * .01
+const smallScale = sunScale * .001
+
+// Orbit Speed in Earth days
+const orbitSpeedScale = 1
+
+// Rotation Speed in Earth hours
+const rotationSpeedScale = 1
+
+// Parameters [3dModel, Model Path, Rotation Point (Primary), Distance from Sun (AU), planet size, orbit speed, rotation speed]
 let solarSystem = [
-    [sun, "models/Sun.glb", null, null],
-    [mercery, "models/Mercury.glb", merceryObj, 0.39 * au],
-    [venus, "models/Venus.glb", venusObj, 0.72 * au],
-    [earth, "models/Earth.glb", earthObj, au],
-    [mars, "models/Mars.glb", marsObj, 1.52 * au],
-    [jupiter, "models/Jupiter.glb", jupiterObj, 5.2 * au],
-    [saturn, "models/Saturn.glb", saturnObj, 9.52 * au],
-    [uranus, "models/Uranus.glb", uranusObj, 19.2 * au],
-    [neptune, "models/Neptune.glb", neptuneObj, 30.09 * au],
+    [sun, "models/Sun.glb", null, null, sunScale, null, rotationSpeedScale * 24 * 25],
+    [mercery, "models/Mercury.glb", merceryObj, 0.39 * au, smallScale, orbitSpeedScale * 88, rotationSpeedScale * 24 * 58.6],
+    [venus, "models/Venus.glb", venusObj, 0.72 * au, smallScale, orbitSpeedScale * 225, rotationSpeedScale * 24 * -243],
+    [earth, "models/Earth.glb", earthObj, au, smallScale, orbitSpeedScale * 365, rotationSpeedScale * 24],
+    [mars, "models/Mars.glb", marsObj, 1.52 * au, smallScale, orbitSpeedScale * 687, rotationSpeedScale * 24.6],
+    [jupiter, "models/Jupiter.glb", jupiterObj, 5.2 * au, largeScale, orbitSpeedScale * 365 * 11.86, rotationSpeedScale * 9.9],
+    [saturn, "models/Saturn.glb", saturnObj, 9.52 * au, largeScale, orbitSpeedScale * 365 * 29.46, rotationSpeedScale * 10.7],
+    [uranus, "models/Uranus.glb", uranusObj, 19.2 * au, mediumScale, orbitSpeedScale * 365 * 84.01, rotationSpeedScale * -17.2],
+    [neptune, "models/Neptune.glb", neptuneObj, 30.09 * au, mediumScale, orbitSpeedScale * 365 * 164.8, rotationSpeedScale * 16.1],
 ]
 
 const scene = new THREE.Scene();
@@ -54,14 +66,14 @@ function createPlanetObj(planetObj, planet, distanceFromPrimary) {
     // Creates a point for planets to rotate around in the scene
     planetObj = new THREE.Object3D();
     planetObj.add(planet);
-    scene.add(planetObj)
+    scene.add(planetObj);
     planet.position.x = distanceFromPrimary
 }
 
 loader.load(
     solarSystem[0][1],
     function (gltf) {
-        gltf.scene.scale.set(0.001, 0.001, 0.001);
+        gltf.scene.scale.set(sunScale, sunScale, sunScale);
         solarSystem[0][0] = gltf.scene
         scene.add(solarSystem[0][0]);
     },
@@ -71,7 +83,7 @@ loader.load(
     }
 );
 
-// createPlanetObj(solarSystem[1][3], solarSystem[1][0], 5)
+// createPlanetObj(solarSystem[1][2], solarSystem[1][0], 5)
 
 camera.position.z = 5;
 
